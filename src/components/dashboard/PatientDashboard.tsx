@@ -10,17 +10,12 @@ import {
   User as UserIcon, 
   Phone, 
   Mail, 
-  MapPin, 
   Stethoscope, 
   Heart, 
-  Plus,
   CalendarDays,
-  Users,
   AlertCircle,
-  Clock as ClockIcon,
   Filter,
   Star,
-  CheckCircle,
   XCircle,
   LogOut
 } from 'lucide-react';
@@ -35,6 +30,9 @@ export default function PatientDashboard({ currentUser, onLogout }: PatientDashb
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [patientInfo, setPatientInfo] = useState<Patient | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
+  const [isBooking, setIsBooking] = useState(false);
   const [searchFilters, setSearchFilters] = useState<SearchFilters>({
     specialization: '',
     doctorName: '',
@@ -42,9 +40,6 @@ export default function PatientDashboard({ currentUser, onLogout }: PatientDashb
     date: '',
     time: ''
   });
-  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
-  const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
-  const [isBooking, setIsBooking] = useState(false);
 
   useEffect(() => {
     const loadData = () => {
@@ -75,25 +70,21 @@ export default function PatientDashboard({ currentUser, onLogout }: PatientDashb
     onLogout();
   };
 
+  // Filter doctors based on search criteria
   const filteredDoctors = doctors.filter(doctor => {
-    // Filter by specialization
-    if (searchFilters.specialization && !doctor.specialization.toLowerCase().includes(searchFilters.specialization.toLowerCase())) {
-      return false;
-    }
+    const matchesSpecialization = !searchFilters.specialization || 
+      doctor.specialization.toLowerCase().includes(searchFilters.specialization.toLowerCase());
     
-    // Filter by doctor name
-    if (searchFilters.doctorName && !doctor.name.toLowerCase().includes(searchFilters.doctorName.toLowerCase())) {
-      return false;
-    }
+    const matchesDoctorName = !searchFilters.doctorName || 
+      doctor.name.toLowerCase().includes(searchFilters.doctorName.toLowerCase());
     
-    // Filter by hospital name
-    if (searchFilters.hospitalName && !doctor.hospitalName.toLowerCase().includes(searchFilters.hospitalName.toLowerCase())) {
-      return false;
-    }
+    const matchesHospitalName = !searchFilters.hospitalName || 
+      doctor.hospitalName.toLowerCase().includes(searchFilters.hospitalName.toLowerCase());
     
-    return true;
+    return matchesSpecialization && matchesDoctorName && matchesHospitalName;
   });
 
+  // Filter available time slots
   const availableSlots = timeSlots.filter(slot => {
     // Basic availability check
     if (!slot.isAvailable || slot.currentPatients >= slot.maxPatients) {
@@ -126,27 +117,24 @@ export default function PatientDashboard({ currentUser, onLogout }: PatientDashb
     doctorSlots: doctorSlots.length,
     searchFilters,
     allDoctors: doctors.map(d => ({ id: d.id, name: d.name, email: d.email })),
-    allDoctorSlots: timeSlots.filter(s => s.doctorId === selectedDoctor?.id).map(s => ({
+    allDoctorIds: [...new Set(doctors.map(d => d.id))],
+    allSlotDoctorIds: [...new Set(timeSlots.map(s => s.doctorId))],
+    sampleTimeSlots: timeSlots.slice(0, 3).map(s => ({
       id: s.id,
+      doctorId: s.doctorId,
       date: s.date,
       startTime: s.startTime,
       isAvailable: s.isAvailable,
       currentPatients: s.currentPatients,
       maxPatients: s.maxPatients
-    })),
-    allSlotDoctorIds: [...new Set(timeSlots.map(s => s.doctorId))],
-    slotSample: timeSlots.slice(0, 3).map(s => ({
-      id: s.id,
-      doctorId: s.doctorId,
-      date: s.date,
-      startTime: s.startTime
     }))
   });
 
   const handleBookAppointment = async () => {
     if (!selectedDoctor || !selectedSlot) return;
-
+    
     setIsBooking(true);
+    
     try {
       const appointment: Appointment = {
         id: Date.now().toString(),
@@ -163,27 +151,19 @@ export default function PatientDashboard({ currentUser, onLogout }: PatientDashb
 
       addAppointment(appointment);
       
-      // Update the time slot to reflect the booking
+      // Update time slot
       const updatedSlot = { ...selectedSlot, currentPatients: selectedSlot.currentPatients + 1 };
-      if (updatedSlot.currentPatients >= updatedSlot.maxPatients) {
-        updatedSlot.isAvailable = false;
-      }
       updateInStorage('timeSlots', updatedSlot);
-      
-      alert('Appointment booked successfully!');
+
+      setAppointments(prev => [...prev, appointment]);
       setSelectedDoctor(null);
       setSelectedSlot(null);
-      setIsBooking(false);
       
-      // Reload data
-      const allDoctors = getDoctors();
-      const allTimeSlots = getTimeSlots();
-      const allAppointments = getAppointments();
-      setDoctors(allDoctors);
-      setTimeSlots(allTimeSlots);
-      setAppointments(allAppointments.filter(apt => apt.patientId === currentUser.id));
+      alert('Appointment booked successfully!');
     } catch (error) {
+      console.error('Error booking appointment:', error);
       alert('Failed to book appointment. Please try again.');
+    } finally {
       setIsBooking(false);
     }
   };
@@ -210,9 +190,7 @@ export default function PatientDashboard({ currentUser, onLogout }: PatientDashb
         }
         
         // Reload data
-        const allTimeSlots = getTimeSlots();
         const allAppointments = getAppointments();
-        setTimeSlots(allTimeSlots);
         setAppointments(allAppointments.filter(apt => apt.patientId === currentUser.id));
         
         alert('Appointment cancelled successfully!');
@@ -244,44 +222,36 @@ export default function PatientDashboard({ currentUser, onLogout }: PatientDashb
       return timeDiff < 5 * 60 * 1000 && slot.doctorId !== correctDoctorId;
     });
     
-    if (slotsToUpdate.length > 0) {
-      console.log(`Fixing ${slotsToUpdate.length} slots for doctor ${doctor.name}`);
-      
-      // Update all matching slots
-      slotsToUpdate.forEach(slot => {
-        const updatedSlot = { ...slot, doctorId: correctDoctorId };
-        updateInStorage('timeSlots', updatedSlot);
-      });
-      
-      // Reload data
-      const updatedTimeSlots = getTimeSlots();
-      setTimeSlots(updatedTimeSlots);
-      
-      alert(`Fixed ${slotsToUpdate.length} time slots for Dr. ${doctor.name}`);
-    } else {
-      // If no slots found by time, try to find orphaned slots (slots with doctor IDs that don't exist)
+    // If no slots found by time, try to find orphaned slots (slots with doctor IDs that don't exist)
+    if (slotsToUpdate.length === 0) {
       const orphanedSlots = allTimeSlots.filter(slot => {
         const slotDoctor = allDoctors.find(d => d.id === slot.doctorId);
         return !slotDoctor; // Slot has a doctor ID that doesn't exist
       });
       
+      // Assign orphaned slots to the selected doctor
+      orphanedSlots.forEach(slot => {
+        const updatedSlot = { ...slot, doctorId: correctDoctorId };
+        updateInStorage('timeSlots', updatedSlot);
+      });
+      
       if (orphanedSlots.length > 0) {
-        console.log(`Found ${orphanedSlots.length} orphaned slots, assigning to ${doctor.name}`);
-        
-        // Assign orphaned slots to this doctor
-        orphanedSlots.forEach(slot => {
-          const updatedSlot = { ...slot, doctorId: correctDoctorId };
-          updateInStorage('timeSlots', updatedSlot);
-        });
-        
-        // Reload data
-        const updatedTimeSlots = getTimeSlots();
-        setTimeSlots(updatedTimeSlots);
-        
         alert(`Assigned ${orphanedSlots.length} orphaned slots to Dr. ${doctor.name}`);
+        // Reload data
+        setTimeSlots(getTimeSlots());
       } else {
-        alert('No slots found to fix for this doctor.');
+        alert('No orphaned slots found to fix.');
       }
+    } else {
+      // Update the found slots
+      slotsToUpdate.forEach(slot => {
+        const updatedSlot = { ...slot, doctorId: correctDoctorId };
+        updateInStorage('timeSlots', updatedSlot);
+      });
+      
+      alert(`Fixed ${slotsToUpdate.length} slots for Dr. ${doctor.name}`);
+      // Reload data
+      setTimeSlots(getTimeSlots());
     }
   };
 
@@ -604,7 +574,9 @@ export default function PatientDashboard({ currentUser, onLogout }: PatientDashb
                             <h3>No Available Slots</h3>
                             <p>
                               {searchFilters.date 
+                                // eslint-disable-next-line react/no-unescaped-entities
                                 ? `No time slots available for Dr. ${selectedDoctor.name} on ${searchFilters.date}. Try selecting a different date.`
+                                // eslint-disable-next-line react/no-unescaped-entities
                                 : `No time slots available for Dr. ${selectedDoctor.name}. The doctor may not have created any slots yet.`
                               }
                             </p>
@@ -660,7 +632,7 @@ export default function PatientDashboard({ currentUser, onLogout }: PatientDashb
                                {/* Fix ID Mismatch Button */}
                                <div style={{ marginTop: '12px', padding: '8px', backgroundColor: '#dbeafe', borderRadius: '4px', border: '1px solid #93c5fd' }}>
                                  <p style={{ fontSize: '12px', color: '#1e40af', marginBottom: '8px' }}>
-                                   <strong>🔧 Fix ID Mismatch:</strong> If slots exist but aren't showing, click below to fix the doctor ID mismatch.
+                                   <strong>🔧 Fix ID Mismatch:</strong> If slots exist but aren&apos;t showing, click below to fix the doctor ID mismatch.
                                  </p>
                                  <button
                                    onClick={() => fixDoctorIdMismatch(selectedDoctor.email, selectedDoctor.id)}
