@@ -6,8 +6,8 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true
   },
-  basePath: '/hospital-app',
-  assetPrefix: '/hospital-app/',
+  basePath: '/medtech',
+  assetPrefix: '/medtech/',
 };
 
 export default nextConfig;
