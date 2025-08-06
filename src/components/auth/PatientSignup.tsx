@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { addUser, getUsers } from '@/utils/storage';
-import { User } from '@/types';
+import { addUser, getUsers, addPatient } from '@/utils/storage';
+import { User, Patient } from '@/types';
 import { Eye, EyeOff, Heart, ArrowLeft, UserPlus } from 'lucide-react';
 
 interface PatientSignupProps {
@@ -53,11 +53,20 @@ export default function PatientSignup({ onSignup, onBackToLogin }: PatientSignup
         phone: formData.phone,
         password: formData.password,
         role: 'patient',
+        createdAt: new Date().toISOString()
+      };
+
+      const newPatient: Patient = {
+        id: newUser.id,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
         age: parseInt(formData.age) || undefined,
         createdAt: new Date().toISOString()
       };
 
       addUser(newUser);
+      addPatient(newPatient);
       onSignup(newUser);
     } catch {
       setError('An error occurred during signup');

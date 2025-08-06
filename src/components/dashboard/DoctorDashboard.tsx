@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getTimeSlots, addTimeSlot, getWeeklySchedules, addWeeklySchedule, updateWeeklySchedule, getAppointments, updateInStorage, getPatients, getHospitals, getDoctors } from '@/utils/storage';
 import { TimeSlot, Appointment, User, Hospital, WeeklySchedule } from '@/types';
 import { 
@@ -51,14 +51,7 @@ export default function DoctorDashboard({ currentUser, onLogout }: DoctorDashboa
     maxPatients: 1
   });
 
-  useEffect(() => {
-    loadData();
-    // Real-time updates
-    const interval = setInterval(loadData, 2000);
-    return () => clearInterval(interval);
-  }, [loadData]);
-
-  const loadData = () => {
+  const loadData = useCallback(() => {
     const allTimeSlots = getTimeSlots();
     const allAppointments = getAppointments();
     const allHospitals = getHospitals();
@@ -84,7 +77,14 @@ export default function DoctorDashboard({ currentUser, onLogout }: DoctorDashboa
     setWeeklySchedules(getWeeklySchedules());
     setAppointments(allAppointments);
     setHospitals(allHospitals);
-  };
+  }, [currentUser.id, currentUser.name]);
+
+  useEffect(() => {
+    loadData();
+    // Real-time updates
+    const interval = setInterval(loadData, 2000);
+    return () => clearInterval(interval);
+  }, [loadData]);
 
   const handleAddSlot = (e: React.FormEvent) => {
     e.preventDefault();

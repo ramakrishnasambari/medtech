@@ -167,7 +167,10 @@ export default function HospitalAdminDashboard({ currentUser, onLogout }: Hospit
   };
 
   const hospitalDoctors = doctors.filter(doctor => doctor.hospitalId === currentUser.hospitalId);
-  const hospitalAppointments = appointments.filter(apt => apt.hospitalId === currentUser.hospitalId);
+  const hospitalAppointments = appointments.filter(apt => {
+    const doctor = doctors.find(d => d.id === apt.doctorId);
+    return doctor && doctor.hospitalId === currentUser.hospitalId;
+  });
   
   // Get hospital name from hospitalId
   const getHospitalName = () => {
