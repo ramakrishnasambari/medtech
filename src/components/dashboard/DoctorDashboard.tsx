@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getTimeSlots, addTimeSlot, updateTimeSlot, getWeeklySchedules, addWeeklySchedule, updateWeeklySchedule, getAppointments, updateInStorage, getPatients, getHospitals, getDoctors } from '@/utils/storage';
+import { getTimeSlots, addTimeSlot, getWeeklySchedules, addWeeklySchedule, updateWeeklySchedule, getAppointments, updateInStorage, getPatients, getHospitals, getDoctors } from '@/utils/storage';
 import { TimeSlot, Appointment, User, Hospital, WeeklySchedule } from '@/types';
 import { 
   Plus, 
@@ -9,7 +9,6 @@ import {
   Clock, 
   Users, 
   CheckCircle, 
-  XCircle, 
   Stethoscope, 
   TrendingUp, 
   Activity, 
@@ -57,7 +56,7 @@ export default function DoctorDashboard({ currentUser, onLogout }: DoctorDashboa
     // Real-time updates
     const interval = setInterval(loadData, 2000);
     return () => clearInterval(interval);
-  }, []);
+  }, [loadData]);
 
   const loadData = () => {
     const allTimeSlots = getTimeSlots();
@@ -372,7 +371,7 @@ export default function DoctorDashboard({ currentUser, onLogout }: DoctorDashboa
                   </div>
                   <div className="stat-item">
                     <div className="stat-number">{todayAppointments.length}</div>
-                    <div className="stat-label">Today's Appointments</div>
+                    <div className="stat-label">Today&apos;s Appointments</div>
                   </div>
                 </div>
               </div>
@@ -401,7 +400,7 @@ export default function DoctorDashboard({ currentUser, onLogout }: DoctorDashboa
                   <Users className="w-6 h-6" />
                 </div>
               </div>
-              <div className="stat-card-title">Today's Patients</div>
+              <div className="stat-card-title">Today&apos;s Patients</div>
               <div className="stat-card-number">{todayAppointments.length}</div>
               <div className="stat-card-description">Scheduled today</div>
             </div>
@@ -766,7 +765,7 @@ export default function DoctorDashboard({ currentUser, onLogout }: DoctorDashboa
                         {/* Fix Button */}
                         <div style={{ marginTop: '12px', padding: '8px', backgroundColor: '#dbeafe', borderRadius: '4px', border: '1px solid #93c5fd' }}>
                           <p style={{ fontSize: '12px', color: '#1e40af', marginBottom: '8px' }}>
-                            <strong>🔧 Fix Appointment ID Mismatch:</strong> If appointments exist but aren't showing, click below to fix the doctor ID mismatch.
+                            <strong>🔧 Fix Appointment ID Mismatch:</strong> If appointments exist but aren&apos;t showing, click below to fix the doctor ID mismatch.
                           </p>
                           <button
                             onClick={fixAppointmentDoctorIdMismatch}
@@ -792,7 +791,7 @@ export default function DoctorDashboard({ currentUser, onLogout }: DoctorDashboa
                     <div className="card-title-icon orange">
                       <Calendar className="w-5 h-5" />
                     </div>
-                    <h2>Today's Schedule</h2>
+                    <h2>Today&apos;s Schedule</h2>
                   </div>
                   <div className="card-subtitle">
                     {todayAppointments.length} appointments today

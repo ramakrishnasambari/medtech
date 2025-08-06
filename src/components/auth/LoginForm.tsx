@@ -32,7 +32,7 @@ export default function LoginForm({ onLogin, onShowSignup }: LoginFormProps) {
       } else {
         setError('Invalid email or password');
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred during login');
     } finally {
       setIsLoading(false);

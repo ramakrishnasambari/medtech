@@ -29,7 +29,7 @@ interface AdminDashboardProps {
   onLogout: () => void;
 }
 
-export default function AdminDashboard({ currentUser, onLogout }: AdminDashboardProps) {
+export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [hospitals, setHospitals] = useState<Hospital[]>([]);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);

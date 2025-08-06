@@ -573,18 +573,16 @@ export default function PatientDashboard({ currentUser, onLogout }: PatientDashb
                             </div>
                             <h3>No Available Slots</h3>
                             <p>
-                              {searchFilters.date 
-                                // eslint-disable-next-line react/no-unescaped-entities
-                                ? `No time slots available for Dr. ${selectedDoctor.name} on ${searchFilters.date}. Try selecting a different date.`
-                                // eslint-disable-next-line react/no-unescaped-entities
-                                : `No time slots available for Dr. ${selectedDoctor.name}. The doctor may not have created any slots yet.`
-                              }
+                                                             {searchFilters.date 
+                                 ? `No time slots available for Dr. ${selectedDoctor.name} on ${searchFilters.date}. Try selecting a different date.`
+                                 : `No time slots available for Dr. ${selectedDoctor.name}. The doctor may not have created any slots yet.`
+                               }
                             </p>
                             <div style={{ marginTop: '12px', fontSize: '14px', color: '#6b7280' }}>
-                              <p>Total slots in system: {timeSlots.length}</p>
-                              <p>Available slots: {availableSlots.length}</p>
-                              <p>Doctor's slots: {timeSlots.filter(s => s.doctorId === selectedDoctor.id).length}</p>
-                              <p>Doctor's available slots: {timeSlots.filter(s => s.doctorId === selectedDoctor.id && s.isAvailable && s.currentPatients < s.maxPatients).length}</p>
+                                                             <p>Total slots in system: {timeSlots.length}</p>
+                               <p>Available slots: {availableSlots.length}</p>
+                               <p>Doctor&apos;s slots: {timeSlots.filter(s => s.doctorId === selectedDoctor.id).length}</p>
+                               <p>Doctor&apos;s available slots: {timeSlots.filter(s => s.doctorId === selectedDoctor.id && s.isAvailable && s.currentPatients < s.maxPatients).length}</p>
                             </div>
                             {searchFilters.date && (
                               <button
@@ -722,7 +720,7 @@ export default function PatientDashboard({ currentUser, onLogout }: PatientDashb
                         <CalendarDays className="w-10 h-10" />
                       </div>
                       <h3>No Appointments</h3>
-                      <p>You haven't booked any appointments yet. Start by finding a doctor above.</p>
+                                             <p>You haven&apos;t booked any appointments yet. Start by finding a doctor above.</p>
                     </div>
                   )}
                 </div>

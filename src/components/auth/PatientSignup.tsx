@@ -59,7 +59,7 @@ export default function PatientSignup({ onSignup, onBackToLogin }: PatientSignup
 
       addUser(newUser);
       onSignup(newUser);
-    } catch (err) {
+    } catch {
       setError('An error occurred during signup');
     } finally {
       setIsLoading(false);

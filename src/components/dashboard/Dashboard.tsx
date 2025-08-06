@@ -36,7 +36,7 @@ export default function Dashboard({ currentUser, onLogout }: DashboardProps) {
                     <h2>Access Denied</h2>
                   </div>
                   <div className="card-subtitle">
-                    You don't have permission to access this dashboard
+                    You don&apos;t have permission to access this dashboard
                   </div>
                 </div>
                 

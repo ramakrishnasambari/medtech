@@ -10,7 +10,6 @@ import {
   Calendar, 
   Mail, 
   Phone, 
-  MapPin, 
   Building2, 
   Heart,
   Bell,
@@ -255,7 +254,7 @@ export default function HospitalAdminDashboard({ currentUser, onLogout }: Hospit
             <div className="welcome-content">
               <div className="welcome-text">
                 <h1>Welcome back, {currentUser.name}!</h1>
-                <p>Manage your hospital's doctors and monitor patient appointments</p>
+                <p>Manage your hospital&apos;s doctors and monitor patient appointments</p>
                 <div className="stats-overview">
                   <div className="stat-item">
                     <div className="stat-number stat-doctors">{hospitalDoctors.length}</div>
