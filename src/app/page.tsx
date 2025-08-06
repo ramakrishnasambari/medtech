@@ -19,12 +19,18 @@ export default function Home() {
     const initializeApp = async () => {
       try {
         console.log('Starting app initialization...');
-        initializeDemoData();
-        console.log('Demo data initialized');
-        const user = getCurrentUser();
-        console.log('Current user:', user);
-        if (user) {
-          setCurrentUser(user);
+        
+        // Check if we're in a browser environment
+        if (typeof window !== 'undefined') {
+          initializeDemoData();
+          console.log('Demo data initialized');
+          const user = getCurrentUser();
+          console.log('Current user:', user);
+          if (user) {
+            setCurrentUser(user);
+          }
+        } else {
+          console.log('Not in browser environment, skipping initialization');
         }
       } catch (error) {
         console.error('Error initializing app:', error);
@@ -38,7 +44,7 @@ export default function Home() {
     const timeout = setTimeout(() => {
       console.log('Loading timeout reached, forcing loading to false');
       setIsLoading(false);
-    }, 5000);
+    }, 3000); // Reduced timeout to 3 seconds
 
     initializeApp();
 
