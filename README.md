@@ -1,36 +1,139 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hospital Management System
 
-## Getting Started
+A comprehensive hospital management system built with Next.js, TypeScript, and Tailwind CSS. This application provides role-based dashboards for different users in a hospital ecosystem.
 
-First, run the development server:
+## 🏥 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Multi-Role Support
+- **Med Network Admin**: Manage hospitals and hospital admins
+- **Hospital Admin**: Manage doctors and view analytics
+- **Doctor**: Create time slots, manage appointments
+- **Patient**: Search doctors, book appointments
+
+### Key Functionalities
+- ✅ Hospital and doctor management
+- ✅ Time slot creation with weekly scheduling
+- ✅ Appointment booking and management
+- ✅ Advanced search and filtering
+- ✅ Real-time analytics
+- ✅ Role-based access control
+
+## 🚀 Live Demo
+
+Visit the live application: [Hospital App](https://your-username.github.io/hospital-app/)
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS
+- **Icons**: Lucide React
+- **Storage**: LocalStorage (for demo purposes)
+- **Deployment**: GitHub Pages
+
+## 📦 Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/hospital-app.git
+   cd hospital-app
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## 🔐 Demo Accounts
+
+### Initial Setup
+- **Med Network Admin**: `admin@mednetwork.com` / `admin123`
+- **Password**: `admin123`
+
+### System Flow
+1. **Med Network Admin** creates hospitals and hospital admins
+2. **Hospital Admin** creates doctors for their hospital
+3. **Patients** sign up through the UI
+4. **Doctors** create time slots and manage appointments
+5. **Patients** search and book appointments
+
+## 🚀 Deployment
+
+This project is configured for automatic deployment to GitHub Pages.
+
+### Manual Deployment Steps:
+
+1. **Build the project**
+   ```bash
+   npm run build
+   ```
+
+2. **Push to GitHub**
+   ```bash
+   git add .
+   git commit -m "Deploy to GitHub Pages"
+   git push origin main
+   ```
+
+3. **Enable GitHub Pages**
+   - Go to your repository settings
+   - Navigate to "Pages" section
+   - Select "GitHub Actions" as source
+   - The app will be available at: `https://your-username.github.io/hospital-app/`
+
+## 📁 Project Structure
+
+```
+hospital-app/
+├── src/
+│   ├── app/                 # Next.js app directory
+│   ├── components/          # React components
+│   │   ├── auth/           # Authentication components
+│   │   ├── dashboard/      # Dashboard components
+│   │   └── ui/             # UI components
+│   ├── lib/                # Utility libraries
+│   ├── types/              # TypeScript type definitions
+│   └── utils/              # Utility functions
+├── public/                 # Static assets
+└── .github/workflows/      # GitHub Actions
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔧 Configuration
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment Variables
+No environment variables required for local development. The app uses localStorage for data persistence.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Build Configuration
+- **Output**: Static export for GitHub Pages
+- **Base Path**: `/hospital-app` (for GitHub Pages)
+- **Image Optimization**: Disabled for static export
 
-## Learn More
+## 🤝 Contributing
 
-To learn more about Next.js, take a look at the following resources:
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📄 License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Deploy on Vercel
+## 🆘 Support
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+If you encounter any issues or have questions, please:
+1. Check the [Issues](https://github.com/your-username/hospital-app/issues) page
+2. Create a new issue with detailed information
+3. Include steps to reproduce the problem
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+**Note**: This is a demo application using localStorage for data persistence. For production use, consider implementing a proper backend database.
