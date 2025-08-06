@@ -18,19 +18,31 @@ export default function Home() {
   useEffect(() => {
     const initializeApp = async () => {
       try {
+        console.log('Starting app initialization...');
         initializeDemoData();
+        console.log('Demo data initialized');
         const user = getCurrentUser();
+        console.log('Current user:', user);
         if (user) {
           setCurrentUser(user);
         }
       } catch (error) {
         console.error('Error initializing app:', error);
       } finally {
+        console.log('Setting loading to false');
         setIsLoading(false);
       }
     };
 
+    // Add a timeout to prevent infinite loading
+    const timeout = setTimeout(() => {
+      console.log('Loading timeout reached, forcing loading to false');
+      setIsLoading(false);
+    }, 5000);
+
     initializeApp();
+
+    return () => clearTimeout(timeout);
   }, []);
 
   const handleLogin = (user: User) => {
@@ -77,6 +89,14 @@ export default function Home() {
             <div className="flex items-center justify-center mt-4 space-x-2">
               <Activity className="w-5 h-5 text-white/60 animate-pulse" />
               <span className="text-white/60 text-sm">Loading modules</span>
+            </div>
+            <div className="mt-4">
+              <button 
+                onClick={() => setIsLoading(false)}
+                className="text-white/60 text-sm underline hover:text-white/80"
+              >
+                Click here if loading takes too long
+              </button>
             </div>
           </div>
         </div>
